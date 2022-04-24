@@ -1,7 +1,14 @@
+[切换成中文]: https://github.com/caijianhaoa/mini-vue3/tree/main/README.zh.md
+
+
+
+# 项目目录结构
+
 <!--filetoc-start-->
+
 - [src](https://github.com/caijianhaoa/mini-vue3/tree/main/src)
   - [resctivity](https://github.com/caijianhaoa/mini-vue3/tree/main/src/resctivity)
-    - [__tests__](https://github.com/caijianhaoa/mini-vue3/tree/main/src/resctivity/__tests__)
+    - [**tests**](https://github.com/caijianhaoa/mini-vue3/tree/main/src/resctivity/__tests__)
       - [effect.spec.ts](https://github.com/caijianhaoa/mini-vue3/tree/main/src/resctivity/__tests__/effect.spec.ts)
       - [reactive.spec.ts](https://github.com/caijianhaoa/mini-vue3/tree/main/src/resctivity/__tests__/reactive.spec.ts)
       - [readonly.spec.ts](https://github.com/caijianhaoa/mini-vue3/tree/main/src/resctivity/__tests__/readonly.spec.ts)
