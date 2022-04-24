@@ -46,5 +46,10 @@ export function ref(value) {
 }
 
 export function isRef(ref) {
-  return ref.__v_isRef
+  return !!ref.__v_isRef
+}
+
+export function unRef(ref) {
+  // 是ref对象返回ref.value否则返回初始值
+  return isRef(ref) ? ref.value : ref
 }
