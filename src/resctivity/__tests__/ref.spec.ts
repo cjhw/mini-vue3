@@ -56,7 +56,7 @@ describe('ref', () => {
     expect(unRef(1)).toBe(1)
   })
 
-  // it("proxyRefs",()=> {
-  //   expect
-  // })
+  it('proxyRefs', () => {
+    expect
+  })
 })

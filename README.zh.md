@@ -1,6 +1,4 @@
-[Switch to English]: https://github.com/caijianhaoa/mini-vue3/tree/main/README.md
-
-
+[Switch to English](https://github.com/caijianhaoa/mini-vue3/tree/main/README.md)
 
 # 项目目录结构
 
