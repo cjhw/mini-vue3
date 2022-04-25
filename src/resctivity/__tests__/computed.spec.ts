@@ -5,12 +5,12 @@ describe('computed', () => {
   it('happy path', () => {
     // 跟ref的使用类似
     // 具有缓存功能
-    const user = reactive({ age: 1 })
+    const user = reactive({ age: 10 })
     const age = computed(() => {
       return user.age
     })
 
-    expect(age.value).toBe(1)
+    expect(age.value).toBe(10)
   })
   it('should computed lazyily', () => {
     const value = reactive({
