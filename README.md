@@ -4,6 +4,11 @@
 
 <!--filetoc-start-->
 - [example](https://github.com/caijianhaoa/mini-vue3/tree/main/example)
+  - [componentEmit](https://github.com/caijianhaoa/mini-vue3/tree/main/example/componentEmit)
+    - [App.js](https://github.com/caijianhaoa/mini-vue3/tree/main/example/componentEmit/App.js)
+    - [Foo.js](https://github.com/caijianhaoa/mini-vue3/tree/main/example/componentEmit/Foo.js)
+    - [index.html](https://github.com/caijianhaoa/mini-vue3/tree/main/example/componentEmit/index.html)
+    - [main.js](https://github.com/caijianhaoa/mini-vue3/tree/main/example/componentEmit/main.js)
   - [helloworld](https://github.com/caijianhaoa/mini-vue3/tree/main/example/helloworld)
     - [App.js](https://github.com/caijianhaoa/mini-vue3/tree/main/example/helloworld/App.js)
     - [Foo.js](https://github.com/caijianhaoa/mini-vue3/tree/main/example/helloworld/Foo.js)
@@ -29,6 +34,7 @@
     - [ref.ts](https://github.com/caijianhaoa/mini-vue3/tree/main/src/resctivity/ref.ts)
   - [runtime-core](https://github.com/caijianhaoa/mini-vue3/tree/main/src/runtime-core)
     - [component.ts](https://github.com/caijianhaoa/mini-vue3/tree/main/src/runtime-core/component.ts)
+    - [componentEmit,.ts](https://github.com/caijianhaoa/mini-vue3/tree/main/src/runtime-core/componentEmit,.ts)
     - [componentProps.ts](https://github.com/caijianhaoa/mini-vue3/tree/main/src/runtime-core/componentProps.ts)
     - [componentPublicInstance.ts](https://github.com/caijianhaoa/mini-vue3/tree/main/src/runtime-core/componentPublicInstance.ts)
     - [createApp.ts](https://github.com/caijianhaoa/mini-vue3/tree/main/src/runtime-core/createApp.ts)
