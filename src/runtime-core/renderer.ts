@@ -8,7 +8,7 @@ export function render(vnode, container) {
 
 function patch(vnode, container) {
   // 判断element类型还是组件类型
-  console.log(vnode.type)
+  // console.log(vnode.type)
   const { shapeFlag } = vnode
   if (shapeFlag & ShapeFlags.ELEMENT) {
     // element类型
@@ -44,7 +44,13 @@ function mountElement(vnode, container) {
   const { props } = vnode
   for (let key in props) {
     const val = props[key]
-    el.setAttribute(key, val)
+    const isOn = (key: string) => /^on[A-Z]/.test(key)
+    if (isOn(key)) {
+      const event = key.slice(2).toLowerCase()
+      el.addEventListener(event, val)
+    } else {
+      el.setAttribute(key, val)
+    }
   }
   container.append(el)
 }

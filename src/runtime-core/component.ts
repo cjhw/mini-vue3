@@ -1,3 +1,5 @@
+import { shallowReadonly } from '../resctivity/reactive'
+import { initProps } from './componentProps'
 import { publicInstanceProxyHandlers } from './componentPublicInstance'
 
 export function createComponentInstance(vnode) {
@@ -10,6 +12,8 @@ export function createComponentInstance(vnode) {
 }
 
 export function setupComponent(instance) {
+  // 初始化props
+  initProps(instance, instance.vnode.props)
   setupStatefulComponent(instance)
 }
 
@@ -20,7 +24,7 @@ function setupStatefulComponent(instance: any) {
   const { setup } = Component
   if (setup) {
     // 返回object或function
-    const setupResult = setup()
+    const setupResult = setup(shallowReadonly(instance.props))
     handleSetupResult(instance, setupResult)
   }
 }
