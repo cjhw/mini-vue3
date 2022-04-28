@@ -27,7 +27,6 @@ export function createVnode(type, props?, children?) {
 
 export function createTextVNode(text: string) {
   console.log(createVnode(Text, {}, text))
-
   return createVnode(Text, {}, text)
 }
 

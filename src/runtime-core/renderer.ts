@@ -92,8 +92,6 @@ function setupRenderEffect(instance: any, initinalvnode, container: any) {
   // 虚拟节点树
   const { proxy } = instance
   // this绑定proxy
-  console.log(instance)
-
   const subTree = instance.render.call(proxy)
   patch(subTree, container)
   initinalvnode.el = subTree.el
