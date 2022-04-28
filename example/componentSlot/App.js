@@ -1,9 +1,12 @@
-import { h } from '../../lib/mini-vue.esm.js'
+import { h, createTextVNode } from '../../lib/mini-vue.esm.js'
 import { Foo } from './Foo.js'
 
 // Fragment 以及 Text
 export const App = {
   name: 'App',
+  setup() {
+    return {}
+  },
   render() {
     const app = h('div', {}, 'App')
     // object key
@@ -13,7 +16,7 @@ export const App = {
       {
         header: ({ age }) => [
           h('p', {}, 'header' + age),
-          // createTextVNode('你好呀'),
+          createTextVNode('你好呀 李银河'),
         ],
         footer: () => h('p', {}, 'footer'),
       }
@@ -21,9 +24,5 @@ export const App = {
     // 数组 vnode
     // const foo = h(Foo, {}, h("p", {}, "123"));
     return h('div', {}, [app, foo])
-  },
-
-  setup() {
-    return {}
   },
 }

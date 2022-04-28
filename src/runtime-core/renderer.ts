@@ -1,5 +1,6 @@
 import { ShapeFlags } from '../shared/ShapeFlags'
 import { createComponentInstance, setupComponent } from './component'
+import { Fragment, Text } from './vnode'
 
 export function render(vnode, container) {
   patch(vnode, container)
@@ -8,14 +9,35 @@ export function render(vnode, container) {
 function patch(vnode, container) {
   // 判断element类型还是组件类型
   // console.log(vnode.type)
-  const { shapeFlag } = vnode
-  if (shapeFlag & ShapeFlags.ELEMENT) {
-    // element类型
-    processElement(vnode, container)
-  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-    // STATEFUL_COMPONENT类型
-    processComponent(vnode, container)
+  const { type, shapeFlag } = vnode
+  // Fragment -> 只渲染 children
+  switch (type) {
+    case Fragment:
+      processFragment(vnode, container)
+      break
+    case Text:
+      processText(vnode, container)
+      break
+    default:
+      if (shapeFlag & ShapeFlags.ELEMENT) {
+        // element类型
+        processElement(vnode, container)
+      } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+        // STATEFUL_COMPONENT类型
+        processComponent(vnode, container)
+      }
   }
+}
+
+function processFragment(vnode: any, container: any) {
+  mountChildren(vnode, container)
+}
+
+function processText(vnode: any, container: any) {
+  const { children } = vnode
+  const textNode = document.createTextNode(children)
+  vnode.el = textNode
+  container.append(textNode)
 }
 
 function processElement(vnode, container) {
@@ -70,6 +92,8 @@ function setupRenderEffect(instance: any, initinalvnode, container: any) {
   // 虚拟节点树
   const { proxy } = instance
   // this绑定proxy
+  console.log(instance)
+
   const subTree = instance.render.call(proxy)
   patch(subTree, container)
   initinalvnode.el = subTree.el
