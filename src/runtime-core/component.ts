@@ -1,3 +1,4 @@
+import { proxyRefs } from '../resctivity'
 import { shallowReadonly } from '../resctivity/reactive'
 import { emit } from './componentEmit'
 import { initProps } from './componentProps'
@@ -15,6 +16,8 @@ export function createComponentInstance(vnode, parent) {
     slots: {},
     provides: parent ? parent.provides : {},
     parent,
+    isMounted: false,
+    subTree: {},
     emit: () => {},
   }
   component.emit = emit.bind(null, component) as any
@@ -46,7 +49,7 @@ function setupStatefulComponent(instance: any) {
 
 function handleSetupResult(instance, setupResult: any) {
   if (typeof setupResult === 'object') {
-    instance.setupState = setupResult
+    instance.setupState = proxyRefs(setupResult)
   }
   // 保证组件的render有值
   finishComponentSetup(instance)

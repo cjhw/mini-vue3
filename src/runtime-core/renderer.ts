@@ -1,3 +1,4 @@
+import { effect } from '../resctivity/effect'
 import { ShapeFlags } from '../shared/ShapeFlags'
 import { createComponentInstance, setupComponent } from './component'
 import { createAppAPI } from './createApp'
@@ -10,49 +11,55 @@ export function createRenderer(options) {
     insert: hostInsert,
   } = options
   function render(vnode, container) {
-    patch(vnode, container, null)
+    patch(null, vnode, container, null)
   }
 
-  function patch(vnode, container, parentComponent) {
+  // n1->老虚拟节点 n2->信虚拟节点
+  function patch(n1, n2, container, parentComponent) {
     // 判断element类型还是组件类型
     // console.log(vnode.type)
-    const { type, shapeFlag } = vnode
+    const { type, shapeFlag } = n2
     // Fragment -> 只渲染 children
     switch (type) {
       case Fragment:
-        processFragment(vnode, container, parentComponent)
+        processFragment(n1, n2, container, parentComponent)
         break
       case Text:
-        processText(vnode, container)
+        processText(n1, n2, container)
         break
       default:
         if (shapeFlag & ShapeFlags.ELEMENT) {
           // element类型
-          processElement(vnode, container, parentComponent)
+          processElement(n1, n2, container, parentComponent)
         } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
           // STATEFUL_COMPONENT类型
-          processComponent(vnode, container, parentComponent)
+          processComponent(n1, n2, container, parentComponent)
         }
     }
   }
 
-  function processFragment(vnode: any, container: any, parentComponent) {
-    mountChildren(vnode, container, parentComponent)
+  function processFragment(n1, n2, container: any, parentComponent) {
+    mountChildren(n2, container, parentComponent)
   }
 
-  function processText(vnode: any, container: any) {
-    const { children } = vnode
+  function processText(n1, n2, container: any) {
+    const { children } = n2
     const textNode = document.createTextNode(children)
-    vnode.el = textNode
+    n2.el = textNode
     container.append(textNode)
   }
 
-  function processElement(vnode, container, parentComponent) {
-    mountElement(vnode, container, parentComponent)
+  function processElement(n1, n2, container, parentComponent) {
+    if (!n1) {
+      mountElement(n2, container, parentComponent)
+    } else {
+      patchElement(n1, n2, container)
+    }
   }
 
-  function processComponent(vnode: any, container: any, parentComponent: any) {
-    mountComponent(vnode, container, parentComponent)
+  function patchElement(n1, n2, container) {
+    console.log(n1)
+    console.log(n2)
   }
 
   function mountElement(vnode, container, parentComponent) {
@@ -72,13 +79,6 @@ export function createRenderer(options) {
     const { props } = vnode
     for (let key in props) {
       const val = props[key]
-      // const isOn = (key: string) => /^on[A-Z]/.test(key)
-      // if (isOn(key)) {
-      //   const event = key.slice(2).toLowerCase()
-      //   el.addEventListener(event, val)
-      // } else {
-      //   el.setAttribute(key, val)
-      // }
       hostPatchProp(el, key, val)
     }
     // container.append(el)
@@ -87,8 +87,12 @@ export function createRenderer(options) {
 
   function mountChildren(vnode: any, container: any, parentComponent) {
     vnode.children.forEach((v) => {
-      patch(v, container, parentComponent)
+      patch(null, v, container, parentComponent)
     })
+  }
+
+  function processComponent(n1, n2: any, container: any, parentComponent: any) {
+    mountComponent(n2, container, parentComponent)
   }
 
   function mountComponent(initinalvnode: any, container: any, parentComponent) {
@@ -98,12 +102,26 @@ export function createRenderer(options) {
   }
 
   function setupRenderEffect(instance: any, initinalvnode, container: any) {
-    // 虚拟节点树
-    const { proxy } = instance
-    // this绑定proxy
-    const subTree = instance.render.call(proxy)
-    patch(subTree, container, instance)
-    initinalvnode.el = subTree.el
+    effect(() => {
+      if (!instance.isMounted) {
+        // 虚拟节点树
+        const { proxy } = instance
+        // this绑定proxy
+        instance.subTree = instance.render.call(proxy)
+        const subTree = instance.subTree
+        patch(null, subTree, container, instance)
+        initinalvnode.el = subTree.el
+        instance.isMounted = true
+      } else {
+        // 虚拟节点树
+        const { proxy } = instance
+        // this绑定proxy
+        const subTree = instance.render.call(proxy)
+        const preSubTree = instance.subTree
+        instance.subTree = subTree
+        patch(preSubTree, subTree, container, instance)
+      }
+    })
   }
   return {
     createApp: createAppAPI(render),
