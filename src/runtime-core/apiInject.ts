@@ -14,7 +14,6 @@ export function provide(key, value) {
 export function inject(key, defaultValue) {
   const currentInstance: any = getCurrentInstance()
   if (currentInstance) {
-    const { parent } = currentInstance
     const parentProvides = currentInstance.parent.provides
     console.log(parentProvides)
     if (key in parentProvides) {
