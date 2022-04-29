@@ -1,4 +1,5 @@
 import { effect } from '../resctivity/effect'
+import { EMPTY_OBJ } from '../shared'
 import { ShapeFlags } from '../shared/ShapeFlags'
 import { createComponentInstance, setupComponent } from './component'
 import { createAppAPI } from './createApp'
@@ -58,8 +59,29 @@ export function createRenderer(options) {
   }
 
   function patchElement(n1, n2, container) {
-    console.log(n1)
-    console.log(n2)
+    const el = n1.el
+    n2.el = el
+    const oldProps = n1.props || EMPTY_OBJ
+    const newProps = n2.props || EMPTY_OBJ
+    patchProps(el, oldProps, newProps)
+  }
+
+  function patchProps(el, oldProps, newProps) {
+    for (const key in newProps) {
+      const preProp = oldProps[key]
+      const nextProp = newProps[key]
+      if (preProp !== nextProp) {
+        hostPatchProp(el, key, preProp, nextProp)
+      }
+    }
+
+    if (oldProps !== EMPTY_OBJ) {
+      for (const key in oldProps) {
+        if (!(key in newProps)) {
+          hostPatchProp(el, key, oldProps[key], null)
+        }
+      }
+    }
   }
 
   function mountElement(vnode, container, parentComponent) {
@@ -79,7 +101,7 @@ export function createRenderer(options) {
     const { props } = vnode
     for (let key in props) {
       const val = props[key]
-      hostPatchProp(el, key, val)
+      hostPatchProp(el, key, null, val)
     }
     // container.append(el)
     hostInsert(el, container)

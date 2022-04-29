@@ -30,9 +30,9 @@ export const App = {
         },
         'change child props'
       ),
-      // h(Child, {
-      //   msg: this.msg,
-      // }),
+      h(Child, {
+        msg: this.msg,
+      }),
       h(
         'button',
         {
