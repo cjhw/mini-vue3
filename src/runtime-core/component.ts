@@ -50,7 +50,7 @@ function setupStatefulComponent(instance: any) {
 function handleSetupResult(instance, setupResult: any) {
   if (typeof setupResult === 'object') {
     instance.setupState = proxyRefs(setupResult)
-    console.log(instance.setupState)
+    // console.log(instance.setupState)
   }
   // 保证组件的render有值
   finishComponentSetup(instance)
