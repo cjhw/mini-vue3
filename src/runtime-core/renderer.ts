@@ -4,6 +4,7 @@ import { ShapeFlags } from '../shared/ShapeFlags'
 import { createComponentInstance, setupComponent } from './component'
 import { shouldUpdateComponent } from './componentUpdateUtils'
 import { createAppAPI } from './createApp'
+import { queueJobs } from './scheduler'
 import { Fragment, Text } from './vnode'
 
 export function createRenderer(options) {
@@ -64,8 +65,8 @@ export function createRenderer(options) {
   function patchElement(n1, n2, container, parentComponent, anchor) {
     const el = n1.el
     n2.el = el
-    // console.log(n1)
-    // console.log(n2)
+    console.log(n1)
+    console.log(n2)
     const oldProps = n1.props || EMPTY_OBJ
     const newProps = n2.props || EMPTY_OBJ
     patchChildren(n1, n2, el, parentComponent, anchor)
@@ -327,31 +328,38 @@ export function createRenderer(options) {
     container: any,
     anchor
   ) {
-    instance.update = effect(() => {
-      if (!instance.isMounted) {
-        // 虚拟节点树
-        const { proxy } = instance
-        // this绑定proxy
-        instance.subTree = instance.render.call(proxy)
-        const subTree = instance.subTree
-        patch(null, subTree, container, instance, anchor)
-        initinalvnode.el = subTree.el
-        instance.isMounted = true
-      } else {
-        const { next, vnode } = instance
-        if (next) {
-          next.el = vnode.el
-          updateComponentPreRender(instance, next)
+    instance.update = effect(
+      () => {
+        if (!instance.isMounted) {
+          // 虚拟节点树
+          const { proxy } = instance
+          // this绑定proxy
+          instance.subTree = instance.render.call(proxy)
+          const subTree = instance.subTree
+          patch(null, subTree, container, instance, anchor)
+          initinalvnode.el = subTree.el
+          instance.isMounted = true
+        } else {
+          const { next, vnode } = instance
+          if (next) {
+            next.el = vnode.el
+            updateComponentPreRender(instance, next)
+          }
+          // 虚拟节点树
+          const { proxy } = instance
+          // this绑定proxy
+          const subTree = instance.render.call(proxy)
+          const preSubTree = instance.subTree
+          instance.subTree = subTree
+          patch(preSubTree, subTree, container, instance, anchor)
         }
-        // 虚拟节点树
-        const { proxy } = instance
-        // this绑定proxy
-        const subTree = instance.render.call(proxy)
-        const preSubTree = instance.subTree
-        instance.subTree = subTree
-        patch(preSubTree, subTree, container, instance, anchor)
+      },
+      {
+        scheduler() {
+          queueJobs(instance.update)
+        },
       }
-    })
+    )
   }
   return {
     createApp: createAppAPI(render),
