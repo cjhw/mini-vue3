@@ -2,6 +2,7 @@ import { effect } from '../resctivity/effect'
 import { EMPTY_OBJ } from '../shared'
 import { ShapeFlags } from '../shared/ShapeFlags'
 import { createComponentInstance, setupComponent } from './component'
+import { shouldUpdateComponent } from './componentUpdateUtils'
 import { createAppAPI } from './createApp'
 import { Fragment, Text } from './vnode'
 
@@ -289,7 +290,23 @@ export function createRenderer(options) {
     parentComponent: any,
     anchor
   ) {
-    mountComponent(n2, container, parentComponent, anchor)
+    if (!n1) {
+      mountComponent(n2, container, parentComponent, anchor)
+    } else {
+      updateComponent(n1, n2)
+    }
+  }
+
+  function updateComponent(n1, n2) {
+    const instance = n1.component
+    n2.component = instance
+    if (shouldUpdateComponent(n1, n2)) {
+      instance.next = n2
+      instance.update()
+    } else {
+      n2.el = n1.el
+      instance.vnode = n2
+    }
   }
 
   function mountComponent(
@@ -299,6 +316,7 @@ export function createRenderer(options) {
     anchor
   ) {
     const instance = createComponentInstance(initinalvnode, parentComponent)
+    initinalvnode.component = instance
     setupComponent(instance)
     setupRenderEffect(instance, initinalvnode, container, anchor)
   }
@@ -309,7 +327,7 @@ export function createRenderer(options) {
     container: any,
     anchor
   ) {
-    effect(() => {
+    instance.update = effect(() => {
       if (!instance.isMounted) {
         // 虚拟节点树
         const { proxy } = instance
@@ -320,6 +338,11 @@ export function createRenderer(options) {
         initinalvnode.el = subTree.el
         instance.isMounted = true
       } else {
+        const { next, vnode } = instance
+        if (next) {
+          next.el = vnode.el
+          updateComponentPreRender(instance, next)
+        }
         // 虚拟节点树
         const { proxy } = instance
         // this绑定proxy
@@ -335,6 +358,14 @@ export function createRenderer(options) {
   }
 }
 
+// 更新instance
+function updateComponentPreRender(instance, nextVNode) {
+  instance.vnode = nextVNode
+  instance.next = null
+  instance.props = nextVNode.props
+}
+
+// 最长递增子序列
 function getSequence(arr) {
   const p = arr.slice()
   const result = [0]
