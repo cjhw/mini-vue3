@@ -57,7 +57,7 @@ function parseText(context) {
 
   // 1.获取content
   const content = parseTextData(context, endIndex)
-  console.log('--------', content)
+  // console.log('--------', content)
   return {
     type: NodeTypes.TEXT,
     content,

@@ -1,6 +1,6 @@
 [切换成中文](https://github.com/caijianhaoa/mini-vue3/tree/main/README.zh.md)
 
-# 项目目录结构
+# Project directory structure
 
 <!--filetoc-start-->
 - [example](https://github.com/caijianhaoa/mini-vue3/tree/main/example)
