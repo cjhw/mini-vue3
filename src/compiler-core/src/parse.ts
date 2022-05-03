@@ -82,7 +82,7 @@ function parseElement(context: any, ancestors) {
   } else {
     throw new Error(`缺少结束标签:${element.tag}`)
   }
-  console.log('--------', context.source)
+  // console.log('--------', context.source)
   return element
 }
 
