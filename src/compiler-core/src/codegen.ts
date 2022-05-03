@@ -31,10 +31,10 @@ export function generate(ast) {
 
 function getFunctionPreamble(ast, context) {
   const { push } = context
-  const VueBinging = 'vue'
-  const aliasHelper = (s) => `${helperMapName[s]} as _${helperMapName[s]}`
+  const VueBinging = 'Vue'
+  const aliasHelper = (s) => `${helperMapName[s]}:_${helperMapName[s]}`
   if (ast.helpers.length > 0) {
-    push(`import { ${ast.helpers.map(aliasHelper)} } from '${VueBinging}'`)
+    push(`const { ${ast.helpers.map(aliasHelper).join(', ')} } = ${VueBinging}`)
   }
   push('\n')
   push('return ')
@@ -119,7 +119,7 @@ function genNullable(args: any) {
 
 function genExpression(node, context) {
   const { push } = context
-  push(`_ctx.${node.content}`)
+  push(`${node.content}`)
 }
 
 function genInterpolation(node, context) {

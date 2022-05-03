@@ -334,7 +334,7 @@ export function createRenderer(options) {
           // 虚拟节点树
           const { proxy } = instance
           // this绑定proxy
-          instance.subTree = instance.render.call(proxy)
+          instance.subTree = instance.render.call(proxy, proxy)
           const subTree = instance.subTree
           patch(null, subTree, container, instance, anchor)
           initinalvnode.el = subTree.el
@@ -348,7 +348,7 @@ export function createRenderer(options) {
           // 虚拟节点树
           const { proxy } = instance
           // this绑定proxy
-          const subTree = instance.render.call(proxy)
+          const subTree = instance.render.call(proxy, proxy)
           const preSubTree = instance.subTree
           instance.subTree = subTree
           patch(preSubTree, subTree, container, instance, anchor)
