@@ -15,6 +15,7 @@ export default {
       debugger
       console.log(instance.vnode.el.innerText)
       nextTick(() => {
+        console.log(instance.vnode.el.innerText)
         console.log(instance)
       })
 
