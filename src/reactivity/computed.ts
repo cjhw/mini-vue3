@@ -1,6 +1,7 @@
 import { ReactiveEffect } from './effect'
 
 class ComputedRefImpl {
+  // 标记是否被读过
   private _dirty: boolean = true
   private _value: any
   // 依赖的响应式对象用effect存起来

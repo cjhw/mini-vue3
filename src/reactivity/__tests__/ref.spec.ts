@@ -6,7 +6,6 @@ describe('ref', () => {
     const a = ref(1)
     expect(a.value).toBe(1)
   })
-
   it('should be reactive', () => {
     const a = ref(1)
     let dummy

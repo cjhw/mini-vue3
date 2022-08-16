@@ -1,4 +1,4 @@
-import { effect } from '../resctivity/effect'
+import { effect } from '../reactivity/effect'
 import { EMPTY_OBJ } from '../shared'
 import { ShapeFlags } from '../shared/ShapeFlags'
 import { createComponentInstance, setupComponent } from './component'
@@ -19,7 +19,7 @@ export function createRenderer(options) {
     patch(null, vnode, container, null, null)
   }
 
-  // n1->老虚拟节点 n2->信虚拟节点
+  // n1->老虚拟节点 n2->新虚拟节点
   function patch(n1, n2, container, parentComponent, anchor) {
     // 判断element类型还是组件类型
     // console.log(vnode.type)
