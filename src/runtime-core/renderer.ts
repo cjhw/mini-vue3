@@ -83,10 +83,9 @@ export function createRenderer(options) {
       if (preShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
         // 1.把老的children清空
         unmountChildren(n1.children)
-        // 2.设置 text
-        hostSetElementText(container, c2)
       }
       if (c1 !== c2) {
+        // 2.设置 text
         hostSetElementText(container, c2)
       }
     } else {
@@ -147,6 +146,7 @@ export function createRenderer(options) {
         }
       }
     } else if (i > e2) {
+      // 老的比新的多
       while (i <= e1) {
         hostRemove(c1[i].el)
         i++
@@ -155,11 +155,14 @@ export function createRenderer(options) {
       // 中间节点
       let s1 = i
       let s2 = i
+      // 记录新节点的中间children节点数
       const toBePatched = e2 - s2 + 1
-      let patched
+      // 记录当前patch了多少个中间节点
+      let patched = 0
       const keyToNewIndexMap = new Map()
       // 存储子序列
       let moved = false
+      // 记录老节点的当前子节点索引
       let maxNewIndexSoFar = 0
       const newIndexToOldIndexMap = new Array(toBePatched)
       for (let i = 0; i < toBePatched; i++) {
@@ -171,6 +174,7 @@ export function createRenderer(options) {
       }
       for (let i = s1; i <= e1; i++) {
         const prevChild = c1[i]
+        // 新节点的中间children节点patch完了直接删除老节点中多余的
         if (patched >= toBePatched) {
           hostRemove(prevChild.el)
           continue
@@ -196,6 +200,7 @@ export function createRenderer(options) {
           } else {
             moved = true
           }
+          // 避免i=0的情况所以+1因为初始化newIndexToOldIndexMap全是0
           newIndexToOldIndexMap[newIndex - s2] = i + 1
           patch(prevChild, c2[newIndex], container, parentComponent, null)
           patched++
@@ -212,6 +217,7 @@ export function createRenderer(options) {
         const anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : null
 
         if (newIndexToOldIndexMap[i] === 0) {
+          // 老的里面不存在要创建新节点
           patch(null, nextChild, container, parentComponent, anchor)
         } else if (moved) {
           if (j < 0 || i !== increasingNewIndexSequence[j]) {
@@ -233,18 +239,20 @@ export function createRenderer(options) {
   }
 
   function patchProps(el, oldProps, newProps) {
-    for (const key in newProps) {
-      const preProp = oldProps[key]
-      const nextProp = newProps[key]
-      if (preProp !== nextProp) {
-        hostPatchProp(el, key, preProp, nextProp)
+    if (oldProps !== newProps) {
+      for (const key in newProps) {
+        const preProp = oldProps[key]
+        const nextProp = newProps[key]
+        if (preProp !== nextProp) {
+          hostPatchProp(el, key, preProp, nextProp)
+        }
       }
-    }
 
-    if (oldProps !== EMPTY_OBJ) {
-      for (const key in oldProps) {
-        if (!(key in newProps)) {
-          hostPatchProp(el, key, oldProps[key], null)
+      if (oldProps !== EMPTY_OBJ) {
+        for (const key in oldProps) {
+          if (!(key in newProps)) {
+            hostPatchProp(el, key, oldProps[key], null)
+          }
         }
       }
     }
@@ -334,6 +342,7 @@ export function createRenderer(options) {
           // 虚拟节点树
           const { proxy } = instance
           // this绑定proxy
+          // 第二个参数是因为template模板编译后要从_ctx里取数据
           instance.subTree = instance.render.call(proxy, proxy)
           const subTree = instance.subTree
           patch(null, subTree, container, instance, anchor)
