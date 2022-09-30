@@ -58,7 +58,7 @@
     - [main.js](https://github.com/caijianhaoa/mini-vue3/tree/main/example/update/main.js)
 - [lib](https://github.com/caijianhaoa/mini-vue3/tree/main/lib)
   - [mini-vue.cjs.js](https://github.com/caijianhaoa/mini-vue3/tree/main/lib/mini-vue.cjs.js)
-  - [mini-vue.esm.js](https://github.com/caijianhaoa/mini-vue3/tree/main/lib/mini-vue.esm.js)
+  - [mini-vue.esm.js](https://github.com/caijianhaoa/mini-vue3/tree/main/dist/mini-vue.esm.js)
 - [src](https://github.com/caijianhaoa/mini-vue3/tree/main/src)
   - [compiler-core](https://github.com/caijianhaoa/mini-vue3/tree/main/src/compiler-core)
     - [src](https://github.com/caijianhaoa/mini-vue3/tree/main/src/compiler-core/src)
